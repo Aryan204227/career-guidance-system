@@ -16,23 +16,15 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// Enable CORS
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// Serve frontend static files BEFORE CORS (same-origin, no CORS needed)
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(distPath));
+}
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// Enable CORS only for API routes
+app.use('/api', cors({
+  origin: true, // Allow all origins for API calls (frontend is same-origin anyway)
   credentials: true,
 }));
 
@@ -43,10 +35,9 @@ app.use('/api/careers', require('./routes/careerRoutes'));
 app.use('/api/comments', require('./routes/commentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
-// Serve frontend in production
+// Catch-all: serve frontend for all non-API routes
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../frontend/dist');
-  app.use(express.static(distPath));
 
   app.get('/{*splat}', (req, res) => {
     res.sendFile(path.resolve(distPath, 'index.html'));
@@ -66,4 +57,3 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
