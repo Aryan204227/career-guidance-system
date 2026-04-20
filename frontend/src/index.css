@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* ── CSS Design Tokens (Dark mode default) ──────────────────────────────────── */
+:root {
+  --bg-base:        #020617;   /* slate-950 */
+  --bg-surface:     #0f172a;   /* slate-900 */
+  --bg-card:        rgba(15, 23, 42, 0.7);
+  --border-subtle:  rgba(168, 85, 247, 0.2);
+  --text-primary:   #f1f5f9;   /* slate-100 */
+  --text-secondary: #94a3b8;   /* slate-400 */
+  --text-muted:     #475569;   /* slate-600 */
+  --scrollbar-track: #020617;
+  --scrollbar-thumb: #6b21a8;
+  --scrollbar-hover: #9333ea;
+}
+
+/* ── Light Mode Override ─────────────────────────────────────────────────────── */
+html.light {
+  --bg-base:        #f8fafc;   /* slate-50  */
+  --bg-surface:     #ffffff;
+  --bg-card:        rgba(255, 255, 255, 0.9);
+  --border-subtle:  rgba(139, 92, 246, 0.25);
+  --text-primary:   #0f172a;   /* slate-900 */
+  --text-secondary: #475569;   /* slate-600 */
+  --text-muted:     #94a3b8;   /* slate-400 */
+  --scrollbar-track: #e2e8f0;
+  --scrollbar-thumb: #a78bfa;
+  --scrollbar-hover: #7c3aed;
+}
+
+/* ── Apply tokens globally ───────────────────────────────────────────────────── */
+html {
+  background-color: var(--bg-base);
+  color:            var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-base);
+  color:            var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Theme-aware utility classes ─────────────────────────────────────────────── */
+@layer utilities {
+  .bg-theme-base    { background-color: var(--bg-base); }
+  .bg-theme-surface { background-color: var(--bg-surface); }
+  .bg-theme-card    { background-color: var(--bg-card); }
+  .border-theme     { border-color: var(--border-subtle); }
+  .text-theme-primary   { color: var(--text-primary); }
+  .text-theme-secondary { color: var(--text-secondary); }
+  .text-theme-muted     { color: var(--text-muted); }
+
+  /* Light mode card/surface overrides for Tailwind classes */
+  html.light .light-surface {
+    background-color: rgba(255,255,255,0.85) !important;
+    border-color: rgba(139,92,246,0.2) !important;
+    color: #0f172a !important;
+  }
+  html.light .light-page {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+  html.light .light-navbar {
+    background-color: rgba(248,250,252,0.9) !important;
+    border-color: rgba(139,92,246,0.2) !important;
+  }
+
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%);  }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-12px); }
+  }
+  .animate-float { animation: float 4s ease-in-out infinite; }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+/* ── Selection ───────────────────────────────────────────────────────────────── */
+::selection { background: rgba(168,85,247,0.3); color: inherit; }
